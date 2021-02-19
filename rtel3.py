@@ -67,11 +67,11 @@ def cleanup():
     if os.path.isfile('temp/'+temp_title+'-out.m4a'):
         os.remove('temp/'+temp_title+'-out.m4a')
 
-def rte():
+def rte(i):
     os.system('cls')
     print("***  RTÉ Player Downloader (rte-L3 v1.1)  ***")
     print("***       Developed by fullonrager        ***")
-
+    print("\ndownloading " + (str(i)) + " of " + str(len(sys.argv)-1))
     print("\nLoading page...")
     options = webdriver.ChromeOptions()
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
@@ -213,13 +213,12 @@ def rte():
 
     # Clean up leftover files
     cleanup()
-    sys.exit("Finished!")
 
-def virgin():
+def virgin(i):
     os.system('cls')
     print("***  Virgin Media Player Downloader (rte-L3 v1.1)  ***")
     print("***            Developed by fullonrager            ***")
-
+    print("\ndownloading " + (str(i)) + " of " + str(len(sys.argv)-1))
     print("\nLoading page...")
     options = webdriver.ChromeOptions()
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
@@ -288,18 +287,23 @@ def virgin():
 
     # Clean up leftover files
     cleanup()
-    sys.exit("Finished!")
-
+    
 try:
     url = sys.argv[1]
 except IndexError:
     sys.exit("Error: Please enter a URL to download from.")
-
+print(str(len(sys.argv)) + "files to download")
 try:
     if url[12:15] == "rte":
-        rte()
+        for i in range(1, len(sys.argv)):
+            url = sys.argv[i]
+            rte(i)
+        sys.exit("Finished!")
     elif url[12:18] == "virgin":
-        virgin()
+        for i in range(1, len(sys.argv)):
+            url = sys.argv[i]
+            virgin(i)
+        sys.exit("Finished!")
     else:
         sys.exit('This URL is not supported.\nNote: URLs must begin with "https://www."')
 
