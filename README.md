@@ -14,9 +14,9 @@ In the decryptor's "content_key_decryption.js" on line 251 - **console.log**("Wi
 
 4. Remove the log parsing and memory dump folders from the downloaded git folder. Not sure if this is necessary but they caused me issues with loading the decryptor.
 
-5. In Chrome, go to the Extensions page and click "Pack extension". Enter the location of the widevine decryptor folder with the modified content_key_decryption.js.
+5. In Chrome, go to the Extensions page and click "Pack extension". Enter the location of the widevine L3 guesser folder with the modified content_key_decryption.js.
 
-6. Save the output file as "decryptor**1**.crx" Paste the outputted .crx file in the rte-L3 folder and rename it to "decryptor**1**.crx".
+6. Save the output file as "decryptor**1**.crx" Paste the outputted .crx file in the rte-L3 folder and rename it if you havent already to "decryptor**1**.crx".
 
 # How to use
 `rtel3.py "URL"`
