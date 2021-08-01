@@ -97,7 +97,7 @@ def rte(url,i,k):
 
 
     try:
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, 'onetrust-policy-text')))
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'onetrust-policy-text')))
     except selenium.common.exceptions.TimeoutException:
         if not multiple:
             sys.exit("\nError: Request timed out, try again later.")
@@ -121,8 +121,8 @@ def rte(url,i,k):
         if not multiple:
             sys.exit("\nError: Request timed out, try again.")
         else:
-            print("Request timed out, trying again in 10 seconds.\n")
-            time.sleep(10)
+            print("Request timed out, trying again in 5 seconds.\n")
+            time.sleep(2)
             driver.quit()
             time.sleep(3)
             rte(url,i,k)
@@ -130,13 +130,13 @@ def rte(url,i,k):
             return
 
     try:
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn')))
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn')))
     except selenium.common.exceptions.NoSuchElementException:
         if not multiple:
             sys.exit("\nError: Request timed out, try again later.")
         else:
             print("Request timed out, trying again in 10 seconds.\n")
-            time.sleep(10)
+            time.sleep(2)
             driver.quit()
             time.sleep(3)
             rte(url,i,k)
@@ -146,8 +146,8 @@ def rte(url,i,k):
         if not multiple:
             sys.exit("\nError: Request timed out, try again later.")
         else:
-            print("Request timed out, trying again in 10 seconds.\n")
-            time.sleep(10)
+            print("Request timed out, trying again in 5 seconds.\n")
+            time.sleep(2)
             driver.quit()
             time.sleep(3)
             rte(url,i,k)
@@ -171,10 +171,17 @@ def rte(url,i,k):
 
     # Bypass mature content pop-up if needed
     try:
+        print("Checking for mature content block.")
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'modal-body')))
+        print("found")
         driver.find_element_by_class_name('modal-body').text
         driver.find_element_by_class_name('btn.btn-lg.btn-warning.btn-shadow').click()
         print("bypassed the mature content popup")
     except selenium.common.exceptions.NoSuchElementException:
+        print("No Mature content block detected.")
+        pass
+    except selenium.common.exceptions.TimeoutException:
+        print("No mature content block")
         pass
 
     time.sleep(3)
@@ -264,7 +271,20 @@ def rte(url,i,k):
     # Allow time to receive decryption keys
     time.sleep(3)
 
-    key_string = driver.find_element_by_tag_name("body").get_attribute("innerText")
+    try:
+        key_string = driver.find_element_by_tag_name("body").get_attribute("innerText")
+    except selenium.common.exceptions.TimeoutException:
+        driver.quit()
+        if not multiple:
+            sys.exit("\nError: Request timed out, try again.")
+        else:
+            print("Cracking failed due to timeout (current timeout setting is 10 minutes)\n Trying again in 5 seconds.\n")
+            time.sleep(3)
+            driver.quit()
+            time.sleep(3)
+            rte(url,i,k)
+            time.sleep(3)
+            return
     driver.quit()
     keys = re.findall(r"WidevineDecryptor: Found key: (\w+) \(KID=(\w+)\)", key_string)
 
