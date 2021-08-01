@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import seleniumwire
 import selenium
+import time
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -85,15 +86,14 @@ def rte(url,i,k):
 
     print("Loading page...")
     options = webdriver.ChromeOptions()
-    print("did first bit")
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    print("did 2d bit")
+    print("loading options")
     options.add_extension("widevine-l3-guesser-master.crx")
-    print("did 3d bit")
+    print("loading decryptor")
     driver = webdriver.Chrome(options=options)
-    print("did 4d bit")
+    print("Configuring options and decryptor")
     driver_version = driver.capabilities['chrome']['chromedriverVersion']
-    print("did 5d bit")
+    print("Loaded. Running..")
     driver.get(url)
 
 
@@ -124,8 +124,24 @@ def rte(url,i,k):
             rte(url,i,k)
             return
 
-    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn')))
-
+    try:
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, 'btn')))
+    except selenium.common.exceptions.NoSuchElementException:
+        if not multiple:
+            sys.exit("\nError: Request timed out, try again later.")
+        else:
+            print("Request timed out, trying again in 10 seconds.\n")
+            time.sleep(10)
+            rte(url,i,k)
+            return
+    except selenium.common.exceptions.TimeoutException:
+        if not multiple:
+            sys.exit("\nError: Request timed out, try again later.")
+        else:
+            print("Request timed out, trying again in 10 seconds.\n")
+            time.sleep(10)
+            rte(url,i,k)
+            return
     # Play the video
     print("Attempting to click play button...")
     time.sleep(4)
@@ -135,17 +151,18 @@ def rte(url,i,k):
         if not multiple:
             sys.exit("\nError: Request timed out, try again later.")
         else:
-            print("Request timed out, trying again in 2 minutes.\n")
-            time.sleep(120)
+            print("Request timed out, trying again in 30 seconds.\n")
+            time.sleep(30)
             rte(url,i,k)
             return
-    
+    start_time = time.time()
     time.sleep(2)
 
     # Bypass mature content pop-up if needed
     try:
         driver.find_element_by_class_name('modal-body').text
         driver.find_element_by_class_name('btn.btn-lg.btn-warning.btn-shadow').click()
+        print("bypassed the mature content popup")
     except selenium.common.exceptions.NoSuchElementException:
         pass
 
@@ -228,20 +245,16 @@ def rte(url,i,k):
             failed_list.append(url)
             driver.quit()
             return
-    time.sleep(120)
-    while len(str(video_mpd)) < 2 :
-        print("waiting for mpd")
-        time.sleep(60)
+    time.sleep(5)
 
     print("\nFound MPD URL: " + video_mpd + "\n")
-
+    print("Attempting to crack the encryption keys... please allow approx. 5 minutes. \n The Chrome window will show the video file as loading (spinning circle) while this is still working")
 
     # Allow time to receive decryption keys
-    time.sleep(15)
+    time.sleep(3)
 
     key_string = driver.find_element_by_tag_name("body").get_attribute("innerText")
     driver.quit()
-
     keys = re.findall(r"WidevineDecryptor: Found key: (\w+) \(KID=(\w+)\)", key_string)
 
     # Create a string for each of the five keys
@@ -293,7 +306,8 @@ def rte(url,i,k):
     print("Key 4: " + kid_key4)
     print("Key 5: " + kid_key5)
     print()
-
+    elapsed_time = time.time() - start_time
+    print ("\n Cracking took "+str(int(elapsed_time/60))+"minutes, "+str((elapsed_time/60)-int(elapsed_time/60))+"seconds.")
     download_video(video_mpd)
 
     # Decryption stage
@@ -330,7 +344,7 @@ def virgin(url,i):
     print("Loading page...")
     options = webdriver.ChromeOptions()
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    options.add_extension("decryptor.crx")
+    options.add_extension("decryptor1.crx")
     driver = webdriver.Chrome(options=options)
     driver_version = driver.capabilities['chrome']['chromedriverVersion']
     driver.get(url)
