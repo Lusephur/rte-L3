@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import seleniumwire
 import selenium
-import time
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -103,9 +102,12 @@ def rte(url,i,k):
         if not multiple:
             sys.exit("\nError: Request timed out, try again later.")
         else:
-            print("Request timed out, trying again in 2 minutes.\n")
-            time.sleep(120)
+            print("Request timed out, trying again in 10 seconds seconds.\n")
+            time.sleep(10)
+            driver.quit()
+            time.sleep(3)
             rte(url,i,k)
+            time.sleep(3)
             return
 
     print("Accepting necessary cookies...")
@@ -119,9 +121,12 @@ def rte(url,i,k):
         if not multiple:
             sys.exit("\nError: Request timed out, try again.")
         else:
-            print("Request timed out, trying again in 2 minutes.\n")
-            time.sleep(120)
+            print("Request timed out, trying again in 10 seconds.\n")
+            time.sleep(10)
+            driver.quit()
+            time.sleep(3)
             rte(url,i,k)
+            time.sleep(3)
             return
 
     try:
@@ -132,7 +137,10 @@ def rte(url,i,k):
         else:
             print("Request timed out, trying again in 10 seconds.\n")
             time.sleep(10)
+            driver.quit()
+            time.sleep(3)
             rte(url,i,k)
+            time.sleep(3)
             return
     except selenium.common.exceptions.TimeoutException:
         if not multiple:
@@ -140,7 +148,10 @@ def rte(url,i,k):
         else:
             print("Request timed out, trying again in 10 seconds.\n")
             time.sleep(10)
+            driver.quit()
+            time.sleep(3)
             rte(url,i,k)
+            time.sleep(3)
             return
     # Play the video
     print("Attempting to click play button...")
