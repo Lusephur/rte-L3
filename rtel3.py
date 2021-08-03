@@ -338,7 +338,7 @@ def rte(url,i,k):
     print("Key 5: " + kid_key5)
     print()
     elapsed_time = time.time() - start_time
-    print ("\n Cracking took "+str(int(elapsed_time/60))+"minutes, "+str((elapsed_time/60)-int(elapsed_time/60))+"seconds.")
+    print ("\n Cracking took "+str(int(elapsed_time/60))+"minutes, "+str(int(60*((elapsed_time/60)-(int(elapsed_time/60)))))+" seconds.")
     download_video(video_mpd)
 
     # Decryption stage
@@ -476,7 +476,7 @@ def tg4(url,i,k):
     print("Loading page...")
     options = webdriver.ChromeOptions()
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    options.add_extension("decryptor.crx")
+    options.add_extension("decryptor1.crx")
     driver = webdriver.Chrome(options=options)
     driver_version = driver.capabilities['chrome']['chromedriverVersion']
     driver.get(url)
