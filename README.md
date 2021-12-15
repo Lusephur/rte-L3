@@ -1,3 +1,7 @@
+
+🅰🆂 🅾🅵 01/12/2021 🆃🅷🅸🆂 🅽🅾 🅻🅾🅽🅶🅴🆁 🆆🅾🆁🅺🆂
+
+
 # rte-L3
 This is based fully on the work of fullonranger and a concept for testing security of Widevine-L3 encryption.   
 It is meant to be used with Widevine-L3-Guesser which was compiled recently late July 2021 by https://github.com/Satsuoni.
